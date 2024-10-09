@@ -22,7 +22,6 @@ RUN flutter pub get
 RUN flutter build web
 
 # Usar una imagen ligera para servir la aplicación
-# Sensitive
 FROM alpine
 
 ENTRYPOINT ["id"]
