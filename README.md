@@ -1,6 +1,6 @@
 # Maprice 🗺️
 
-¡Bienvenidos a la aplicación **Mapa de Productos**! Este proyecto es una app de Flutter que te ayuda a encontrar los mejores precios de productos en diferentes ubicaciones, todo dentro de un mapa interactivo de Google Maps. Ideal para comparar precios y hacer compras inteligentes en tu zona.
+¡Bienvenidos a la aplicación **Mapa de Productos**! Este proyecto es una app de Flutter que te ayuda a encontrar los mejores precios de productos en diferentes ubicaciones, todo dentro de un mapa interactivo de Google Maps. Ideal para comparar precios y hacer compras inteligentes en tu zona
 
 ## 📋 Descripción del Proyecto
 
