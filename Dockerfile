@@ -11,8 +11,10 @@ COPY web ./web
 COPY android ./android
 COPY ios ./ios
 COPY test ./test
+FROM ubuntu:22.04
+# Sensitive
 COPY . .
-
+CMD /run.sh
 # Instala las dependencias
 RUN flutter pub get
 
