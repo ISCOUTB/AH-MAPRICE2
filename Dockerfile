@@ -1,6 +1,5 @@
 # Etapa 1: Compilación del código de Flutter
-FROM cirrusci/flutter:3.7.0
-
+FROM cirrusci/flutter:3.7.0 as build
 
 # Establece el directorio de trabajo en el contenedor
 WORKDIR /app
@@ -25,6 +24,7 @@ COPY --from=build /app/build/app/outputs/flutter-apk/app-release.apk /app
 
 # Define el comando para iniciar la aplicación (en este caso es una APK compilada)
 CMD ["flutter", "run"]
+
 
 # Permitir que Flutter se ejecute como root
 ENV FLUTTER_ALLOW_ROOT=true
