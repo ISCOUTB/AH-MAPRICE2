@@ -9,13 +9,13 @@ RUN apt-get update && \
     openjdk-11-jdk \
     libglu1-mesa \
     curl \
-    unzip  # Agregamos unzip aquí
+    unzip
 
 # Clonar el repositorio de Flutter
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
 
 # Cambiar la propiedad del directorio /flutter
-RUN chown -R 1000:1000 /flutter  # Cambia la propiedad a un UID y GID que coincida con flutter_user
+RUN chown -R 1000:1000 /flutter
 
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
@@ -34,9 +34,6 @@ COPY . .
 
 # Cambiar a usuario no root
 USER flutter_user
-
-# Asegurarse de que el archivo pubspec.lock tenga los permisos correctos
-RUN touch pubspec.lock && chown flutter_user:flutter_user pubspec.lock
 
 # Ejecutar flutter pub get como flutter_user
 RUN flutter pub get
