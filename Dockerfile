@@ -13,6 +13,9 @@ RUN apt-get update && \
 # Clonar el repositorio de Flutter
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
 
+# Cambiar la propiedad del directorio /flutter
+RUN chown -R $(id -u):$(id -g) /flutter
+
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
