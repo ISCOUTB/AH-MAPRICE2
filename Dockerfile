@@ -37,13 +37,14 @@ USER flutter_user
 
 # Ejecutar flutter pub get como flutter_user
 RUN flutter pub get
-# Cambiar a usuario no root
-USER flutter_user
-
-# Crear el archivo pubspec.lock con los permisos adecuados
-RUN touch pubspec.lock && chown flutter_user:flutter_user pubspec.lock
+# Cambiar a usuario root
+USER root
 
 # Ejecutar flutter pub get
 RUN flutter pub get
+
+# Cambiar de nuevo a flutter_user
+USER flutter_user
+
 
 
