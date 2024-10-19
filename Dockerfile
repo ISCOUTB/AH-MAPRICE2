@@ -54,5 +54,13 @@ RUN touch pubspec.lock && chmod 644 pubspec.lock
 # Ejecutar flutter pub get
 RUN flutter pub get
 
+# Cambiar a usuario flutter_user
+USER flutter_user
+
+# Crear el archivo pubspec.lock si no existe y ajustar permisos
+RUN touch pubspec.lock && chmod 666 pubspec.lock
+
+# Ejecutar flutter pub get
+RUN flutter pub get
 
 
