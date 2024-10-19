@@ -40,4 +40,7 @@ RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
+# Copiar el código de la aplicación
+COPY --chown=flutter_user:flutter_user . .
+
 
