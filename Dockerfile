@@ -1,40 +1,26 @@
-# Usa una imagen de base con Flutter preinstalado
-FROM cirrusci/flutter:latest AS build
+# Etapa 1: Compilación del código de Flutter
+FROM cirrusci/flutter:latest as build
 
-# Establece el directorio de trabajo
+# Establece el directorio de trabajo en el contenedor
 WORKDIR /app
 
-# Copia el archivo pubspec.yaml y el archivo de código a la imagen
-COPY pubspec.yaml ./
-COPY lib ./lib
-COPY web ./web
-COPY android ./android
-COPY ios ./ios
-COPY test ./test
-FROM ubuntu:22.04
-# Sensitive
+# Copia todos los archivos del proyecto al contenedor
 COPY . .
-CMD /run.sh
+
 # Instala las dependencias
 RUN flutter pub get
 
-# Compila la aplicación para web
-RUN flutter build web
+# Compila la aplicación en modo release (puedes cambiar a 'debug' si es necesario)
+RUN flutter build apk --release
 
-# Usar una imagen ligera para servir la aplicación
-FROM alpine
+# Etapa 2: Imagen final para producción
+FROM alpine:latest
 
-RUN addgroup -S nonroot \
-    && adduser -S nonroot -G nonroot
+# Establece el directorio de trabajo en el contenedor
+WORKDIR /app
 
-USER nonroot
+# Copia los artefactos compilados desde la etapa anterior
+COPY --from=build /app/build/app/outputs/flutter-apk/app-release.apk /app
 
-ENTRYPOINT ["id"]
-# Copia los archivos generados por Flutter al contenedor Nginx
-COPY --from=build /app/build/web /usr/share/nginx/html
-
-# Expone el puerto 80
-EXPOSE 80
-
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Define el comando para iniciar la aplicación (en este caso es una APK compilada)
+CMD ["flutter", "run"]
