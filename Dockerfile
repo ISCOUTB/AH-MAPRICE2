@@ -32,11 +32,12 @@ RUN chown -R flutter_user:flutter_user /app
 # Copiar el código de la aplicación
 COPY . .
 
+# Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
+USER root
+RUN chmod -R 777 /app
+
 # Cambiar a usuario no root
 USER flutter_user
-
-# Verificar y ajustar permisos en pubspec.lock antes de flutter pub get
-RUN touch pubspec.lock && chmod 666 pubspec.lock
 
 # Ejecutar flutter pub get
 RUN flutter pub get
@@ -48,6 +49,7 @@ RUN chown -R flutter_user:flutter_user /app
 # Cambiar a usuario flutter_user para el resto de operaciones
 USER flutter_user
 
-# Comando por defecto al iniciar el contenedor
+# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
 CMD ["flutter", "pub", "get"]
+
 
