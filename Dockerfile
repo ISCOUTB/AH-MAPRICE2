@@ -17,7 +17,6 @@ ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
 # Crear un usuario no root
 RUN useradd -ms /bin/bash flutter_user
-USER flutter_user
 
 # Establecer el directorio de trabajo
 WORKDIR /app
@@ -25,9 +24,14 @@ WORKDIR /app
 # Copiar el código de la aplicación
 COPY . .
 
-# Instalar dependencias de Flutter
+# Ejecutar flutter pub get como usuario root
+USER root
 RUN flutter pub get
+
+# Cambiar de nuevo al usuario no root
+USER flutter_user
 
 # Compilar la aplicación
 RUN flutter build apk --release
+
 
