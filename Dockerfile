@@ -1,5 +1,5 @@
 # Usa la imagen oficial de Flutter
-FROM cirruslabs/flutter:latest AS build
+FROM cirruslabs/flutter:3.10.0 AS build
 
 # Crea un usuario no root
 RUN useradd -ms /bin/bash flutter_user
