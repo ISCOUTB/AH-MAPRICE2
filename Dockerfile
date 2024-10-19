@@ -1,5 +1,6 @@
 # Etapa 1: Compilación del código de Flutter
-FROM cirrusci/flutter:latest as build
+FROM cirrusci/flutter:3.7.0
+
 
 # Establece el directorio de trabajo en el contenedor
 WORKDIR /app
