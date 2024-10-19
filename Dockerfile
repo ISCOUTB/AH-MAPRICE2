@@ -14,9 +14,9 @@ RUN apt-get update && \
     libglu1-mesa
 
 # Descargar e instalar Flutter
-RUN wget https://storage.googleapis.com/download.flutter.io/linux/flutter_linux_3.10.5-stable.tar.xz && \
-    tar xf flutter_linux_3.10.5-stable.tar.xz && \
-    rm flutter_linux_3.10.5-stable.tar.xz
+RUN wget https://storage.googleapis.com/download.flutter.io/linux/flutter_linux_3.10.6-stable.tar.xz && \
+    tar xf flutter_linux_3.10.6-stable.tar.xz && \
+    rm flutter_linux_3.10.6-stable.tar.xz
 
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
