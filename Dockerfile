@@ -4,19 +4,13 @@ FROM ubuntu:22.04 AS base
 # Instalar dependencias necesarias
 RUN apt-get update && \
     apt-get install -y \
-    wget \
-    unzip \
-    xz-utils \
-    curl \
     git \
     bash \
     openjdk-11-jdk \
     libglu1-mesa
 
-# Descargar e instalar Flutter usando una versión existente
-RUN wget https://storage.googleapis.com/download.flutter.io/linux/flutter_linux_3.13.7-stable.tar.xz && \
-    tar xf flutter_linux_3.13.7-stable.tar.xz && \
-    rm flutter_linux_3.13.7-stable.tar.xz
+# Clonar el repositorio de Flutter
+RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
 
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
