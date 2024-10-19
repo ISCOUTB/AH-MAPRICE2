@@ -35,8 +35,12 @@ COPY . .
 # Cambiar a usuario no root
 USER flutter_user
 
+# Asegurarse de que el archivo pubspec.lock tenga los permisos correctos
+RUN touch pubspec.lock && chown flutter_user:flutter_user pubspec.lock
+
 # Ejecutar flutter pub get como flutter_user
 RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
+
