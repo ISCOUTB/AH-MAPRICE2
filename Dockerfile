@@ -42,5 +42,8 @@ RUN flutter pub get
 RUN flutter build apk --release
 # Copiar el código de la aplicación
 COPY --chown=flutter_user:flutter_user . .
+# Asegúrate de que el archivo pubspec.lock no esté presente antes de ejecutar pub get
+RUN rm -f pubspec.lock && flutter pub get
+
 
 
