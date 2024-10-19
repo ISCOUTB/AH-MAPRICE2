@@ -1,4 +1,5 @@
-FROM ubuntu:22.04 AS build
+# Usa una imagen base de Ubuntu
+FROM ubuntu:22.04 AS base
 
 # Instalar dependencias necesarias
 RUN apt-get update && \
@@ -11,25 +12,29 @@ RUN apt-get update && \
     bash
 
 # Descargar e instalar Flutter
+FROM base AS flutter-install
 RUN wget https://storage.googleapis.com/download.flutter.io/linux/flutter_linux_3.10.5-stable.tar.xz && \
     tar xf flutter_linux_3.10.5-stable.tar.xz && \
     rm flutter_linux_3.10.5-stable.tar.xz
 
+# Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
-# Crea un usuario no root
+# Crear un usuario no root
 RUN useradd -ms /bin/bash flutter_user
 USER flutter_user
 
+# Establecer el directorio de trabajo
 WORKDIR /app
 
+# Copiar el código de la aplicación
 COPY . .
 
+# Instalar dependencias de Flutter
 RUN flutter pub get
 
+# Compilar la aplicación
 RUN flutter build apk --release
-
-FROM flutter/flutter:stable AS build
 
 # Permitir que Flutter se ejecute como root
 ENV FLUTTER_ALLOW_ROOT=true
