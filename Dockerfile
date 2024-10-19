@@ -72,3 +72,19 @@ RUN [ -f pubspec.lock ] || touch pubspec.lock
 # Ejecutar flutter pub get
 RUN flutter pub get
 
+# Cambiar a root para ejecutar pub get
+USER root
+
+# Asegurarse de que los archivos tengan los permisos adecuados
+RUN chown -R flutter_user:flutter_user /app
+
+# Cambiar de nuevo a flutter_user
+USER flutter_user
+
+# Ejecutar flutter pub get
+RUN flutter pub get
+# Cambiar a usuario flutter_user
+USER flutter_user
+
+# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
+CMD ["flutter", "pub", "get"]
