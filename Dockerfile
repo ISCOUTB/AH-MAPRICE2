@@ -28,11 +28,14 @@ WORKDIR /app
 # Copiar el código de la aplicación
 COPY . .
 
-# Cambiar a flutter_user antes de ejecutar flutter pub get
-USER flutter_user
+# Cambiar a usuario root temporalmente para instalar dependencias
+USER root
 
-# Ejecutar flutter pub get como flutter_user
+# Ejecutar flutter pub get como root
 RUN flutter pub get
+
+# Cambiar de nuevo al usuario no root
+USER flutter_user
 
 # Compilar la aplicación
 RUN flutter build apk --release
