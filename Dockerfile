@@ -7,7 +7,8 @@ RUN apt-get update && \
     git \
     bash \
     openjdk-11-jdk \
-    libglu1-mesa
+    libglu1-mesa \
+    curl  # Agregamos curl aquí
 
 # Clonar el repositorio de Flutter
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
@@ -24,12 +25,11 @@ WORKDIR /app
 # Copiar el código de la aplicación
 COPY . .
 
-# Ejecutar flutter pub get como usuario root
-USER root
-RUN flutter pub get
-
-# Cambiar de nuevo al usuario no root
+# Cambiar a flutter_user antes de ejecutar flutter pub get
 USER flutter_user
+
+# Ejecutar flutter pub get como flutter_user
+RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
