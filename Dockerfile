@@ -9,10 +9,11 @@ RUN apt-get update && \
     xz-utils \
     curl \
     git \
-    bash
+    bash \
+    openjdk-11-jdk \
+    libglu1-mesa
 
 # Descargar e instalar Flutter
-FROM base AS flutter-install
 RUN wget https://storage.googleapis.com/download.flutter.io/linux/flutter_linux_3.10.5-stable.tar.xz && \
     tar xf flutter_linux_3.10.5-stable.tar.xz && \
     rm flutter_linux_3.10.5-stable.tar.xz
@@ -35,10 +36,3 @@ RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
-
-FROM cirruslabs/flutter:3.13.7 AS build
-
-
-# Permitir que Flutter se ejecute como root
-ENV FLUTTER_ALLOW_ROOT=true
-
