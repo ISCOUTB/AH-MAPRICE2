@@ -29,6 +29,8 @@ RUN flutter pub get
 
 RUN flutter build apk --release
 
+FROM flutter/flutter:stable AS build
+
 # Permitir que Flutter se ejecute como root
 ENV FLUTTER_ALLOW_ROOT=true
 
