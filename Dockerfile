@@ -26,6 +26,9 @@ RUN useradd -u 1000 -ms /bin/bash flutter_user
 # Establecer el directorio de trabajo
 WORKDIR /app
 
+# Cambiar la propiedad del directorio de trabajo para flutter_user
+RUN chown -R flutter_user:flutter_user /app
+
 # Copiar el código de la aplicación
 COPY . .
 
@@ -37,4 +40,3 @@ RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
-
