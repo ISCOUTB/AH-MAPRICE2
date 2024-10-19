@@ -36,6 +36,9 @@ RUN flutter pub get
 # Compilar la aplicación
 RUN flutter build apk --release
 
+FROM cirruslabs/flutter:3.13.7 AS build
+
+
 # Permitir que Flutter se ejecute como root
 ENV FLUTTER_ALLOW_ROOT=true
 
