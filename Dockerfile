@@ -35,56 +35,19 @@ COPY . .
 # Cambiar a usuario no root
 USER flutter_user
 
-# Ejecutar flutter pub get como flutter_user
-RUN flutter pub get
-# Cambiar a usuario root
-USER root
-
-# Ejecutar flutter pub get
-RUN flutter pub get
-
-# Cambiar de nuevo a flutter_user
-USER flutter_user
-# Cambiar a usuario flutter_user para crear el archivo pubspec.lock
-USER flutter_user
-
-# Verificar y ajustar permisos
-RUN touch pubspec.lock && chmod 644 pubspec.lock
-
-# Ejecutar flutter pub get
-RUN flutter pub get
-
-# Cambiar a usuario flutter_user
-USER flutter_user
-
-# Crear el archivo pubspec.lock si no existe y ajustar permisos
+# Verificar y ajustar permisos en pubspec.lock antes de flutter pub get
 RUN touch pubspec.lock && chmod 666 pubspec.lock
 
 # Ejecutar flutter pub get
 RUN flutter pub get
 
-# Cambiar a usuario flutter_user
-USER flutter_user
-
-# Crear pubspec.lock si no existe
-RUN [ -f pubspec.lock ] || touch pubspec.lock
-
-# Ejecutar flutter pub get
-RUN flutter pub get
-
-# Cambiar a root para ejecutar pub get
+# Cambiar de nuevo a root para asegurarse de que los archivos tengan los permisos adecuados
 USER root
-
-# Asegurarse de que los archivos tengan los permisos adecuados
 RUN chown -R flutter_user:flutter_user /app
 
-# Cambiar de nuevo a flutter_user
+# Cambiar a usuario flutter_user para el resto de operaciones
 USER flutter_user
 
-# Ejecutar flutter pub get
-RUN flutter pub get
-# Cambiar a usuario flutter_user
-USER flutter_user
-
-# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
+# Comando por defecto al iniciar el contenedor
 CMD ["flutter", "pub", "get"]
+
