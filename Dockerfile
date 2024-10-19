@@ -15,13 +15,13 @@ RUN apt-get update && \
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
 
 # Cambiar la propiedad del directorio /flutter
-RUN chown -R $(id -u):$(id -g) /flutter
+RUN chown -R 1000:1000 /flutter  # Cambia la propiedad a un UID y GID que coincida con flutter_user
 
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
 # Crear un usuario no root
-RUN useradd -ms /bin/bash flutter_user
+RUN useradd -u 1000 -ms /bin/bash flutter_user
 
 # Establecer el directorio de trabajo
 WORKDIR /app
@@ -37,3 +37,4 @@ RUN flutter pub get
 
 # Compilar la aplicación
 RUN flutter build apk --release
+
