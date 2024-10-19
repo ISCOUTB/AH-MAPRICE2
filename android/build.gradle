@@ -26,3 +26,7 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+dependencies {
+    implementation "com.google.firebase:firebase-analytics-ktx:20.0.0" // Ejemplo
+    implementation project(':flutter_plugin_loader') // Incluye el plugin
+}
