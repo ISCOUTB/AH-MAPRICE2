@@ -1,11 +1,14 @@
 # Etapa 1: Compilación del código de Flutter
-FROM cirrusci/flutter:3.7.0 as build
+FROM cirrusci/flutter:3.13.7 as build
 
 # Establece el directorio de trabajo en el contenedor
 WORKDIR /app
 
 # Copia todos los archivos del proyecto al contenedor
 COPY . .
+
+# Permitir que Flutter se ejecute como root
+ENV FLUTTER_ALLOW_ROOT=true
 
 # Instala las dependencias
 RUN flutter pub get
