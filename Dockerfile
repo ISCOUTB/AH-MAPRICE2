@@ -1,5 +1,5 @@
 # Etapa 1: Compilación del código de Flutter
-FROM google/flutter:3.13.7 as build
+FROM ghcr.io/cirruslabs/flutter:3.13.7 as build
 
 # Establece el directorio de trabajo en el contenedor
 WORKDIR /app
