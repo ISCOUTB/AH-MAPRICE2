@@ -3,7 +3,7 @@ services:
   flutter-app:
     build: .
     ports:
-      - "3000:3000" # Cambia los puertos según lo que necesites
+      - "3000:3000" 
     volumes:
       - .:/app
     environment:
