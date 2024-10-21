@@ -2,6 +2,7 @@ version: '3'
 services:
   flutter-app:
     build: .
+    container_name: AH-MAPRICE-FA
     ports:
       - "3000:8019" 
     volumes:
