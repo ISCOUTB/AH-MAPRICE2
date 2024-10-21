@@ -19,9 +19,6 @@ WORKDIR /app
 # Copy project files
 COPY . .
 
-# Make the app directory writable
-RUN chmod -R 755 /app
-
 # Set up Git safe directory
 RUN git config --global --add safe.directory /flutter
 
@@ -31,7 +28,7 @@ RUN flutter pub get
 # Compile the application
 RUN flutter build web
 
-# Copy Nginx configuration (if any)
+# Copy Nginx configuration (make sure nginx.conf is present in the context)
 COPY nginx.conf /etc/nginx/nginx.conf
 
 # Expose the web server port
