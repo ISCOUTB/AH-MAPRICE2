@@ -1,7 +1,7 @@
 # Usa una imagen base de Ubuntu
 FROM ubuntu:22.04 AS base
 #crear nginx 
-FROM nginx:latest
+FROM nginx:alpine as final
 
 # Instalar dependencias necesarias
 RUN apt-get update && \
@@ -51,7 +51,7 @@ RUN chown -R flutter_user:flutter_user /app
 
 # Cambiar a usuario flutter_user para el resto de operaciones
 USER flutter_user
-
+EXPOSE  80
 # Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
 CMD ["nginx", "-g", "daemon off;"]
 
