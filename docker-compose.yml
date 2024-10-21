@@ -3,7 +3,7 @@ services:
   flutter-app:
     build: .
     ports:
-      - "3000:8019 " 
+      - "3000:8019" 
     volumes:
       - .:/app
     environment:
