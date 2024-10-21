@@ -9,6 +9,9 @@ RUN apt-get update && \
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
 RUN chown -R 1000:1000 /flutter
 
+# Add Flutter to PATH
+ENV PATH="$PATH:/flutter/bin"
+
 # Create a user
 RUN useradd -u 1000 -ms /bin/bash flutter_user
 USER flutter_user
@@ -36,6 +39,5 @@ EXPOSE 80
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
 
 
