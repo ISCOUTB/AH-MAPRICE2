@@ -1,60 +1,42 @@
-# Usa una imagen base de Ubuntu
-FROM ubuntu:22.04 AS base
+# Base image
+FROM ubuntu:22.04 as base
 
-# Instalar dependencias necesarias
+# Install dependencies
 RUN apt-get update && \
-    apt-get install -y \
-    git \
-    bash \
-    openjdk-11-jdk \
-    libglu1-mesa \
-    curl \
-    unzip
+    apt-get install -y git bash openjdk-11-jdk libglu1-mesa curl unzip
 
-# Clonar el repositorio de Flutter
+# Clone Flutter SDK
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
-
-# Cambiar la propiedad del directorio /flutter
 RUN chown -R 1000:1000 /flutter
 
-# Configurar el PATH
-ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
-
-# Crear un usuario no root
+# Create a user
 RUN useradd -u 1000 -ms /bin/bash flutter_user
-
-# Establecer el directorio de trabajo
-WORKDIR /app
-
-# Copiar el código de la aplicación
-COPY . .
-
-# Cambiar los permisos del directorio de trabajo
-RUN chmod -R 755 /app
-
-# Cambiar a usuario root para ejecutar flutter pub get
-USER root
-
-# Ejecutar flutter pub get
-RUN flutter pub get
-
-# Volver a cambiar a usuario no root
 USER flutter_user
 
-# Compila la aplicación para web
+# Set working directory
+WORKDIR /app
+
+# Copy project files
+COPY . .
+
+# Make the app directory writable
+RUN chmod -R 755 /app
+
+# Set up Git safe directory
+RUN git config --global --add safe.directory /flutter
+
+# Get Flutter dependencies
+RUN flutter pub get
+
+# Compile the application
 RUN flutter build web
 
-# Usar una imagen ligera para servir la aplicación
-FROM nginx:alpine AS production
-
-# Copia los archivos generados por Flutter al contenedor Nginx
-COPY --from=base /app/build/web /usr/share/nginx/html
-
-# Expone el puerto 80
+# Expose the web server port
 EXPOSE 80
 
-# Comando para iniciar Nginx
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
 
 
 
