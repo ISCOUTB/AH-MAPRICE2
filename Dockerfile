@@ -34,7 +34,7 @@ RUN chown -R flutter_user:flutter_user /app
 # Copiar el código de la aplicación
 COPY . .
 # Copiar nginx  
-COPY ./nginx_confign /etc/nginx/conf.d/
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 # Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
 USER root
 RUN chmod -R 777 /app
