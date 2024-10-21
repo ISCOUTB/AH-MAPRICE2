@@ -4,16 +4,6 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 void main() {
   runApp(MyApp());
-  var server = await HttpServer.bind(
-    InternetAddress.anyIPv4, // Esto hace que escuche en todas las interfaces
-    3000, // El puerto que estás exponiendo
-  );
-  print('Servidor escuchando en el puerto ${server.port}');
-  await for (HttpRequest request in server) {
-    request.response
-      ..write('Hello, world')
-      ..close();
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -137,3 +127,4 @@ class _ProductMapPageState extends State<ProductMapPage> {
     );
   }
 }
+
