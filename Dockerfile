@@ -42,7 +42,7 @@ RUN flutter pub get
 RUN flutter build web
 
 # Usar una imagen ligera para servir la aplicación
-FROM nginx:alpine
+FROM nginx:alpine AS production
 
 # Copia los archivos generados por Flutter al contenedor Nginx
 COPY --from=base /app/build/web /usr/share/nginx/html
