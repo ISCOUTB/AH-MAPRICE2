@@ -1,43 +1,55 @@
-# Base image
-FROM ubuntu:22.04 as base
+# Usa una imagen base de Ubuntu
+FROM ubuntu:22.04 AS base
 
-# Install dependencies
+# Instalar dependencias necesarias
 RUN apt-get update && \
-    apt-get install -y git bash openjdk-11-jdk libglu1-mesa curl unzip nginx
+    apt-get install -y \
+    git \
+    bash \
+    openjdk-11-jdk \
+    libglu1-mesa \
+    curl \
+    unzip
 
-# Clone Flutter SDK
+# Clonar el repositorio de Flutter
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
+
+# Cambiar la propiedad del directorio /flutter
 RUN chown -R 1000:1000 /flutter
 
-# Add Flutter to PATH
-ENV PATH="$PATH:/flutter/bin"
+# Configurar el PATH
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
 
-# Create a user
+# Crear un usuario no root
 RUN useradd -u 1000 -ms /bin/bash flutter_user
-USER flutter_user
 
-# Set working directory
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copy project files
+# Cambiar la propiedad del directorio de trabajo para flutter_user
+RUN chown -R flutter_user:flutter_user /app
+
+# Copiar el código de la aplicación
 COPY . .
 
-# Set up Git safe directory
-RUN git config --global --add safe.directory /flutter
+# Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
+USER root
+RUN chmod -R 777 /app
 
-# Get Flutter dependencies
+# Cambiar a usuario no root
+USER flutter_user
+
+# Ejecutar flutter pub get
 RUN flutter pub get
 
-# Compile the application
-RUN flutter build web
+# Cambiar de nuevo a root para asegurarse de que los archivos tengan los permisos adecuados
+USER root
+RUN chown -R flutter_user:flutter_user /app
 
-# Copy Nginx configuration (make sure nginx.conf is present in the context)
-COPY nginx.conf /etc/nginx/nginx.conf
+# Cambiar a usuario flutter_user para el resto de operaciones
+USER flutter_user
 
-# Expose the web server port
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
+CMD ["flutter", "pub", "get"]
 
 
