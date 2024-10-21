@@ -32,10 +32,6 @@ RUN chown -R flutter_user:flutter_user /app
 # Copiar el código de la aplicación
 COPY . .
 
-# Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
-USER root
-RUN chmod -R 777 /app
-
 # Cambiar a usuario no root
 USER flutter_user
 
@@ -49,10 +45,11 @@ RUN flutter build web
 FROM nginx:alpine
 
 # Copia los archivos generados por Flutter al contenedor Nginx
-COPY --from=build /app/build/web /usr/share/nginx/html
+COPY --from=base /app/build/web /usr/share/nginx/html
 
 # Expone el puerto 80
 EXPOSE 80
 
 # Comando para iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
