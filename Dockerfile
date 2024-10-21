@@ -26,17 +26,20 @@ RUN useradd -u 1000 -ms /bin/bash flutter_user
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Cambiar la propiedad del directorio de trabajo para flutter_user
-RUN chown -R flutter_user:flutter_user /app
-
 # Copiar el código de la aplicación
 COPY . .
 
-# Cambiar a usuario no root
-USER flutter_user
+# Cambiar los permisos del directorio de trabajo
+RUN chmod -R 755 /app
+
+# Cambiar a usuario root para ejecutar flutter pub get
+USER root
 
 # Ejecutar flutter pub get
 RUN flutter pub get
+
+# Volver a cambiar a usuario no root
+USER flutter_user
 
 # Compila la aplicación para web
 RUN flutter build web
@@ -52,5 +55,6 @@ EXPOSE 80
 
 # Comando para iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
+
 
 
