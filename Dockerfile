@@ -3,7 +3,7 @@ FROM ubuntu:22.04 as base
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y git bash openjdk-11-jdk libglu1-mesa curl unzip
+    apt-get install -y git bash openjdk-11-jdk libglu1-mesa curl unzip nginx
 
 # Clone Flutter SDK
 RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
@@ -31,12 +31,14 @@ RUN flutter pub get
 # Compile the application
 RUN flutter build web
 
+# Copy Nginx configuration (if any)
+COPY nginx.conf /etc/nginx/nginx.conf
+
 # Expose the web server port
 EXPOSE 80
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
-
 
 
 
