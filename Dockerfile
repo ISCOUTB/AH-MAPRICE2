@@ -51,5 +51,5 @@ USER flutter_user
 
 # Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
 CMD ["flutter", "pub", "get"]
-
+CMD ["nginx", "-g", "daemon off;"]
 
