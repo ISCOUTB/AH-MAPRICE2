@@ -55,4 +55,4 @@ EXPOSE  80
 # Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
 CMD ["nginx", "-g", "daemon off;"]
 
-
+#hola 
