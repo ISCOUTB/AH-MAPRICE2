@@ -1,32 +1,54 @@
-# Usa una imagen de base con Flutter preinstalado
-FROM cirrusci/flutter:latest AS build
+# Usa una imagen base de Ubuntu
+FROM ubuntu:22.04 AS base
 
-# Establece el directorio de trabajo
+# Instalar dependencias necesarias
+RUN apt-get update && \
+    apt-get install -y \
+    git \
+    bash \
+    openjdk-11-jdk \
+    libglu1-mesa \
+    curl \
+    unzip
+
+# Clonar el repositorio de Flutter
+RUN git clone https://github.com/flutter/flutter.git -b stable /flutter
+
+# Cambiar la propiedad del directorio /flutter
+RUN chown -R 1000:1000 /flutter
+
+# Configurar el PATH
+ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+
+# Crear un usuario no root
+RUN useradd -u 1000 -ms /bin/bash flutter_user
+
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copia el archivo pubspec.yaml y el archivo de código a la imagen
-COPY pubspec.yaml ./
-COPY lib ./lib
-COPY web ./web
-COPY android ./android
-COPY ios ./ios
-COPY test ./test
+# Cambiar la propiedad del directorio de trabajo para flutter_user
+RUN chown -R flutter_user:flutter_user /app
+
+# Copiar el código de la aplicación
 COPY . .
 
-# Instala las dependencias
+# Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
+USER root
+RUN chmod -R 777 /app
+
+# Cambiar a usuario no root
+USER flutter_user
+
+# Ejecutar flutter pub get
 RUN flutter pub get
 
-# Compila la aplicación para web
-RUN flutter build web
+# Cambiar de nuevo a root para asegurarse de que los archivos tengan los permisos adecuados
+USER root
+RUN chown -R flutter_user:flutter_user /app
 
-# Usar una imagen ligera para servir la aplicación
-FROM nginx:alpine
+# Cambiar a usuario flutter_user para el resto de operaciones
+USER flutter_user
 
-# Copia los archivos generados por Flutter al contenedor Nginx
-COPY --from=build /app/build/web /usr/share/nginx/html
+# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
+CMD ["flutter", "pub", "get"]
 
-# Expone el puerto 80
-EXPOSE 80
-
-# Comando para iniciar Nginx
-CMD ["nginx", "-g", "daemon off;"]

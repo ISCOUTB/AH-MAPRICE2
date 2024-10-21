@@ -4,6 +4,16 @@ allprojects {
         mavenCentral()
     }
 }
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.0.0' // Ajusta la versión según sea necesario
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31' // Ajusta según la versión de Kotlin
+    }
+}
 
 rootProject.buildDir = "../build"
 subprojects {
@@ -15,4 +25,8 @@ subprojects {
 
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
+}
+dependencies {
+    implementation "com.google.firebase:firebase-analytics-ktx:20.0.0" // Ejemplo
+    implementation project(':flutter_plugin_loader') // Incluye el plugin
 }
