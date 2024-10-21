@@ -42,14 +42,17 @@ USER flutter_user
 # Ejecutar flutter pub get
 RUN flutter pub get
 
-# Cambiar de nuevo a root para asegurarse de que los archivos tengan los permisos adecuados
-USER root
-RUN chown -R flutter_user:flutter_user /app
+# Compila la aplicación para web
+RUN flutter build web
 
-# Cambiar a usuario flutter_user para el resto de operaciones
-USER flutter_user
+# Usar una imagen ligera para servir la aplicación
+FROM nginx:alpine
 
-# Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
-CMD ["flutter", "pub", "get"]
+# Copia los archivos generados por Flutter al contenedor Nginx
+COPY --from=build /app/build/web /usr/share/nginx/html
 
+# Expone el puerto 80
+EXPOSE 80
 
+# Comando para iniciar Nginx
+CMD ["nginx", "-g", "daemon off;"]
