@@ -1,14 +1,13 @@
 # Usa una imagen base de Ubuntu
 FROM ubuntu:22.04 AS base
 #crear nginx 
-FROM nginx:alpine as final
-
+FROM nginx:latest AS final
+#usar  openjdk:11-jre-slim
+FROM openjdk:11-jre-slim
 # Instalar dependencias necesarias
-RUN apt-get update && \
-    apt-get install -y \
+RUN apt-get update && apt-get install -y \
     git \
     bash \
-    openjdk-11-jdk \
     libglu1-mesa \
     curl \
     unzip
@@ -21,6 +20,8 @@ RUN chown -R 1000:1000 /flutter
 
 # Configurar el PATH
 ENV PATH="/flutter/bin:/flutter/bin/cache/dart-sdk/bin:${PATH}"
+ENV PATH="/path/to/nginx:${PATH}"
+
 
 # Crear un usuario no root
 RUN useradd -u 1000 -ms /bin/bash flutter_user
@@ -34,7 +35,7 @@ RUN chown -R flutter_user:flutter_user /app
 # Copiar el código de la aplicación
 COPY . .
 # Copiar nginx  
-COPY C:\Users\ioliv\OneDrive\Documentos\Universidad\Arquitectura de software\AH-MAPRICE2\nginx.conf
+COPY ./nginx.conf /etc/nginx/nginx.conf
 # Cambiar a usuario root temporalmente para ajustar permisos en la carpeta de trabajo
 USER root
 RUN chmod -R 777 /app

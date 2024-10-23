@@ -87,28 +87,7 @@ class _ProductMapPageState extends State<ProductMapPage> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: TypeAheadField(
-              textFieldConfiguration: TextFieldConfiguration(
-                decoration: InputDecoration(
-                  labelText: 'Buscar Producto',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              suggestionsCallback: (pattern) async {
-                return _filterProducts(pattern);  // Devuelve la lista filtrada de productos
-              },
-              itemBuilder: (context, suggestion) {
-                return ListTile(
-                  title: Text(suggestion['name']),
-                  subtitle: Text('Precio: ${suggestion['price']} COP'),
-                );
-              },
-              onSuggestionSelected: (suggestion) {
-                List<Map<String, dynamic>> filteredProducts = _filterProducts(suggestion['name']);
-                _addMarkers(filteredProducts);  // Agrega todos los marcadores del producto
-                _moveCameraToMarkers(filteredProducts);  // Mueve la cámara al primer marcador
-              },
-            ),
+            
           ),
           Expanded(
             child: GoogleMap(
