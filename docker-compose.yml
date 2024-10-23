@@ -17,7 +17,7 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     ports:
-      - "80:80"
+      - "8019:80"
     networks:
       - ag
 
