@@ -52,7 +52,6 @@ RUN chown -R flutter_user:flutter_user /app
 
 # Cambiar a usuario flutter_user para el resto de operaciones
 USER flutter_user
-EXPOSE  80
 # Establecer el CMD para ejecutar flutter pub get al iniciar el contenedor
 CMD ["nginx", "-g", "daemon off;"]
 
