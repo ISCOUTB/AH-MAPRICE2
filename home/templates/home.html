@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Productos</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCI1PAoZvDoxKFJoe8aG9iG0AaPPs6pCA"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #logout-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px 20px;
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        #search-bar {
+            margin: 10px;
+            display: flex;
+            justify-content: center;
+        }
+        #search-input {
+            padding: 8px;
+            width: 300px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        #search-btn {
+            padding: 8px 15px;
+            margin-left: 5px;
+            border-radius: 5px;
+            border: none;
+            background-color: #5bc0de;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" id="logout-btn">Logout</button>
+    </form>
+    
+    <h1 style="text-align: center;">Mapa de Productos</h1>
+    <div id="search-bar">
+        <input type="text" id="search-input" placeholder="Buscar productos (nombre o precio)">
+        <button id="search-btn">Buscar</button>
+    </div>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+
+    <script>
+        var productos = [
+            { nombre: "Arroz", precio: 2500, descripcion: "Arroz blanco", latitud: 10.3997, longitud: -75.5144 },
+            { nombre: "Arroz", precio: 2500, descripcion: "Arroz blanco", latitud: 10.4000, longitud: -75.5150 },
+            { nombre: "Frijoles", precio: 5000, descripcion: "Frijoles rojos", latitud: 10.4020, longitud: -75.5120 },
+            { nombre: "Aceite", precio: 8000, descripcion: "Aceite vegetal", latitud: 10.3990, longitud: -75.5160 },
+            { nombre: "Azúcar", precio: 3000, descripcion: "Azúcar refinada", latitud: 10.3985, longitud: -75.5130 },
+            { nombre: "Harina", precio: 2800, descripcion: "Harina de trigo", latitud: 10.4015, longitud: -75.5180 },
+            { nombre: "Leche", precio: 4000, descripcion: "Leche líquida", latitud: 10.4030, longitud: -75.5145 },
+            { nombre: "Huevos", precio: 12000, descripcion: "Cartón de huevos", latitud: 10.4005, longitud: -75.5170 },
+            { nombre: "Pasta", precio: 2000, descripcion: "Pasta de trigo", latitud: 10.4025, longitud: -75.5155 },
+            { nombre: "Café", precio: 7000, descripcion: "Café molido", latitud: 10.4010, longitud: -75.5165 },
+            { nombre: "Queso", precio: 6000, descripcion: "Queso costeño", latitud: 10.3998, longitud: -75.5158 },
+            { nombre: "Pan", precio: 1500, descripcion: "Pan fresco", latitud: 10.3988, longitud: -75.5140 },
+            { nombre: "Carne de res", precio: 20000, descripcion: "Carne de res fresca", latitud: 10.3992, longitud: -75.5135 },
+            { nombre: "Pollo", precio: 15000, descripcion: "Pollo entero", latitud: 10.4002, longitud: -75.5147 },
+            { nombre: "Sal", precio: 1000, descripcion: "Sal refinada", latitud: 10.4018, longitud: -75.5182 },
+            { nombre: "Frutas", precio: 5000, descripcion: "Frutas surtidas", latitud: 10.4032, longitud: -75.5168 },
+            { nombre: "Verduras", precio: 4000, descripcion: "Verduras surtidas", latitud: 10.4035, longitud: -75.5152 },
+        ];
+
+        var map;
+        var markers = [];
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 13,
+                center: { lat: 10.3997, lng: -75.5144 } // Coordenadas de Cartagena, Colombia
+            });
+        }
+
+        function displayMarkers(productList) {
+            // Elimina los marcadores anteriores
+            markers.forEach(marker => marker.setMap(null));
+            markers = [];
+
+            productList.forEach(function(producto) {
+                var marker = new google.maps.Marker({
+                    position: { lat: producto.latitud, lng: producto.longitud },
+                    map: map,
+                    title: producto.nombre
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: `<h3>${producto.nombre}</h3><p>Precio: $${producto.precio} COP</p><p>${producto.descripcion}</p>`
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                });
+
+                markers.push(marker);
+            });
+        }
+
+        document.getElementById('search-btn').addEventListener('click', function() {
+            var query = document.getElementById('search-input').value.toLowerCase();
+            var filteredProducts = productos.filter(producto => 
+                producto.nombre.toLowerCase().includes(query) || 
+                producto.precio.toString().includes(query)
+            );
+            displayMarkers(filteredProducts);
+        });
+
+        // Inicializa el mapa
+        google.maps.event.addDomListener(window, 'load', initMap);
+    </script>
+</body>
+</html>
