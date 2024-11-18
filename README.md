@@ -34,8 +34,8 @@ flutter pub get
 Ejecutar el proyecto:
 
     flutter run
-
-Estructura del proyecto
+    
+##Estructura del proyecto
 
 📂 maprice2/
 ├── android/           # Configuración Android
