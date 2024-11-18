@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -38,6 +40,10 @@
             color: white;
             cursor: pointer;
         }
+        #map {
+            height: 500px;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -45,80 +51,144 @@
         {% csrf_token %}
         <button type="submit" id="logout-btn">Logout</button>
     </form>
-    
+
     <h1 style="text-align: center;">Mapa de Productos</h1>
     <div id="search-bar">
         <input type="text" id="search-input" placeholder="Buscar productos (nombre o precio)">
         <button id="search-btn">Buscar</button>
     </div>
-    <div id="map" style="height: 500px; width: 100%;"></div>
+    <div id="map"></div>
 
     <script>
-        var productos = [
-            { nombre: "Arroz", precio: 2500, descripcion: "Arroz blanco", latitud: 10.3997, longitud: -75.5144 },
-            { nombre: "Arroz", precio: 2500, descripcion: "Arroz blanco", latitud: 10.4000, longitud: -75.5150 },
-            { nombre: "Frijoles", precio: 5000, descripcion: "Frijoles rojos", latitud: 10.4020, longitud: -75.5120 },
-            { nombre: "Aceite", precio: 8000, descripcion: "Aceite vegetal", latitud: 10.3990, longitud: -75.5160 },
-            { nombre: "Azúcar", precio: 3000, descripcion: "Azúcar refinada", latitud: 10.3985, longitud: -75.5130 },
-            { nombre: "Harina", precio: 2800, descripcion: "Harina de trigo", latitud: 10.4015, longitud: -75.5180 },
-            { nombre: "Leche", precio: 4000, descripcion: "Leche líquida", latitud: 10.4030, longitud: -75.5145 },
-            { nombre: "Huevos", precio: 12000, descripcion: "Cartón de huevos", latitud: 10.4005, longitud: -75.5170 },
-            { nombre: "Pasta", precio: 2000, descripcion: "Pasta de trigo", latitud: 10.4025, longitud: -75.5155 },
-            { nombre: "Café", precio: 7000, descripcion: "Café molido", latitud: 10.4010, longitud: -75.5165 },
-            { nombre: "Queso", precio: 6000, descripcion: "Queso costeño", latitud: 10.3998, longitud: -75.5158 },
-            { nombre: "Pan", precio: 1500, descripcion: "Pan fresco", latitud: 10.3988, longitud: -75.5140 },
-            { nombre: "Carne de res", precio: 20000, descripcion: "Carne de res fresca", latitud: 10.3992, longitud: -75.5135 },
-            { nombre: "Pollo", precio: 15000, descripcion: "Pollo entero", latitud: 10.4002, longitud: -75.5147 },
-            { nombre: "Sal", precio: 1000, descripcion: "Sal refinada", latitud: 10.4018, longitud: -75.5182 },
-            { nombre: "Frutas", precio: 5000, descripcion: "Frutas surtidas", latitud: 10.4032, longitud: -75.5168 },
-            { nombre: "Verduras", precio: 4000, descripcion: "Verduras surtidas", latitud: 10.4035, longitud: -75.5152 },
-        ];
-
         var map;
         var markers = [];
 
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 13,
-                center: { lat: 10.3997, lng: -75.5144 } // Coordenadas de Cartagena, Colombia
+                center: { lat: 10.3997, lng: -75.5144 } // Coordenadas de Cartagena
             });
         }
 
-        function displayMarkers(productList) {
-            // Elimina los marcadores anteriores
+        async function loadCSVData(file) {
+            const response = await fetch(file);
+            const text = await response.text();
+
+            // Dividir el archivo en filas y eliminar encabezados y filas vacías
+            const rows = text.split("\n").filter(row => row.trim() !== "").slice(1);
+
+            // Procesar cada fila para extraer "nombre" y "precio"
+            const products = rows.map(row => {
+                const columns = row.split(","); // Separar columnas por comas
+                const title = columns[0]?.trim(); // Primera columna: título del producto
+                const price = columns[1]?.replace("$", "").replace(",", "").trim(); // Segunda columna: precio sin $ ni comas
+
+                return {
+                    nombre: title,
+                    precio: price
+                };
+            });
+
+            return products;
+        }
+
+
+        async function fetchProductos() {
+            const d1 = await loadCSVData("{% static 'csv/productos_d1.csv' %}");
+            const jumbo = await loadCSVData("{% static 'csv/productos_jumbo.csv' %}");
+            const makro = await loadCSVData("{% static 'csv/productos_makro.csv' %}");
+
+            return {
+                d1,
+                jumbo,
+                makro
+            };
+        }
+
+        function getCoordinates(supermarket, product) {
+        const coords = {
+            d1: [
+                { nombre: "TIENDAS D1", latitud: 10.399699, longitud: -75.55628159999999 },
+                { nombre: "Tienda D1 Buenos Aires", latitud: 10.390567, longitud: -75.4915102 },
+                { nombre: "Tiendas D1 Manga", latitud: 10.4129696, longitud: -75.53738129999999 },
+                { nombre: "Tiendas D1", latitud: 10.4065756, longitud: -75.490111 },
+                { nombre: "Tiendas D1", latitud: 10.4308418, longitud: -75.5325921 },
+                { nombre: "Tiendas D1 Escuela Naval Almirante Padilla", latitud: 10.3932986, longitud: -75.5287352 },
+                { nombre: "TIENDAS D1", latitud: 10.4053069, longitud: -75.51007779999999 },
+                { nombre: "Tienda D1Fredonia", latitud: 10.4020985, longitud: -75.4729796 },
+                { nombre: "TIENDAS D1", latitud: 10.3962441, longitud: -75.563439 },
+                { nombre: "Tiendas D1 paladium", latitud: 10.4060513, longitud: -75.48180479999999 },
+                { nombre: "D1", latitud: 10.4721592, longitud: -75.49555099999999 },
+                { nombre: "Supermercado D1", latitud: 10.389561, longitud: -75.47822099999999 },
+                { nombre: "D1 consolata", latitud: 10.3794843, longitud: -75.482501 },
+                { nombre: "Tienda D1 Las Ramblas", latitud: 10.5163989, longitud: -75.4704776 },
+                { nombre: "Tiendas D1 Ternera", latitud: 10.3840796, longitud: -75.4655496 },
+                { nombre: "Tiendas D1 El Recreo", latitud: 10.3865609, longitud: -75.4719094 },
+                { nombre: "Tiendas D1", latitud: 10.4178446, longitud: -75.52970239999999 },
+                { nombre: "Tiendas D1 alto Bosque.", latitud: 10.3901357, longitud: -75.5188306 },
+                { nombre: "Tienda D1", latitud: 10.4035013, longitud: -75.5197781 },
+                { nombre: "Tiendas D1 Bocagrande", latitud: 10.407402, longitud: -75.55135709999999 },
+            ],
+            jumbo: [
+                { nombre: "Jumbo Cartagena Castillo", latitud: 10.424064, longitud: -75.54114489999999 },
+                { nombre: "Jumbo Caribe Plaza Cartagena", latitud: 10.4144308, longitud: -75.5294032 },
+                { nombre: "Jumbo El Castillo", latitud: 10.4251345, longitud: -75.5402117 },
+                { nombre: "Jumbo Cencosud", latitud: 10.4131747, longitud: -75.5295812 },
+                { nombre: "Jumbo Caribe Plaza", latitud: 10.4154409, longitud: -75.5287957 },
+            ],
+            makro: [
+                { nombre: "Makro Cartagena", latitud: 10.397592, longitud: -75.49463399999999 },
+                { nombre: "MAKRO SUPERMAYORISTA S.A - CARTAGENA", latitud: 10.3977843, longitud: -75.4942353 },
+            ]
+        };
+
+            return coords[supermarket].map(coord => ({
+                ...coord,
+                producto: product.nombre,
+                precio: product.precio
+            }));
+        }
+
+        async function displayMarkers(query) {
+            const productos = await fetchProductos();
             markers.forEach(marker => marker.setMap(null));
             markers = [];
 
-            productList.forEach(function(producto) {
-                var marker = new google.maps.Marker({
-                    position: { lat: producto.latitud, lng: producto.longitud },
-                    map: map,
-                    title: producto.nombre
-                });
+            ["d1", "jumbo", "makro"].forEach(supermarket => {
+                productos[supermarket].forEach(producto => {
+                    if (
+                        producto.nombre?.toLowerCase().includes(query) ||
+                        producto.precio?.toString().includes(query)
+                    ) {
+                        const coords = getCoordinates(supermarket, producto);
+                        coords.forEach(coord => {
+                            const marker = new google.maps.Marker({
+                                position: { lat: coord.latitud, lng: coord.longitud },
+                                map: map,
+                                title: coord.producto
+                            });
 
-                var infowindow = new google.maps.InfoWindow({
-                    content: `<h3>${producto.nombre}</h3><p>Precio: $${producto.precio} COP</p><p>${producto.descripcion}</p>`
-                });
+                            const infowindow = new google.maps.InfoWindow({
+                                content: `<h3>${coord.producto}</h3><p>Precio: $${coord.precio} COP</p><p>Supermercado: ${coord.nombre}</p>`
+                            });
 
-                marker.addListener('click', function() {
-                    infowindow.open(map, marker);
-                });
+                            marker.addListener("click", () => {
+                                infowindow.open(map, marker);
+                            });
 
-                markers.push(marker);
+                            markers.push(marker);
+                        });
+                    }
+                });
             });
         }
 
-        document.getElementById('search-btn').addEventListener('click', function() {
-            var query = document.getElementById('search-input').value.toLowerCase();
-            var filteredProducts = productos.filter(producto => 
-                producto.nombre.toLowerCase().includes(query) || 
-                producto.precio.toString().includes(query)
-            );
-            displayMarkers(filteredProducts);
+        document.getElementById("search-btn").addEventListener("click", function () {
+            const query = document.getElementById("search-input").value.toLowerCase();
+            displayMarkers(query);
         });
 
-        // Inicializa el mapa
-        google.maps.event.addDomListener(window, 'load', initMap);
+        google.maps.event.addDomListener(window, "load", initMap);
     </script>
 </body>
 </html>
