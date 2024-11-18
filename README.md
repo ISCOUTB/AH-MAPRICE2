@@ -1,6 +1,6 @@
-# Maprice 2
+# Maprice 
 
-Maprice 2 es una aplicación móvil que permite a los usuarios comparar precios de productos en diferentes zonas, gestionar locales favoritos y recibir notificaciones sobre cambios en precios.
+Maprice es una aplicación móvil que permite a los usuarios comparar precios de productos en diferentes zonas, gestionar locales favoritos y recibir notificaciones sobre cambios en precios.
 
 ## Características principales
 - **Mapa interactivo:** Visualiza precios de productos en diferentes zonas.
